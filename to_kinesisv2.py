@@ -5,13 +5,12 @@ import time
 import logging
 from botocore.exceptions import BotoCoreError, ClientError
 
-# ------------------- Config -------------------
+
 CSV_FILE_PATH = 'Data/mobile-logs.csv'
 STREAM_NAME = 'telco-network-metrics'
 REGION_NAME = 'eu-west-1'
-SLEEP_TIME = 1  # Simulate 1 second delay
+SLEEP_TIME = 1 
 
-# ------------------- Logging Setup -------------------
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -21,7 +20,7 @@ logging.basicConfig(
     ]
 )
 
-# ------------------- Kinesis Client -------------------
+
 def get_kinesis_client(region_name):
     try:
         return boto3.client('kinesis', region_name=region_name)
@@ -29,7 +28,7 @@ def get_kinesis_client(region_name):
         logging.error(f"Failed to create Kinesis client: {e}")
         raise
 
-# ------------------- Read CSV -------------------
+
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
@@ -39,7 +38,7 @@ def read_csv(file_path):
         logging.error(f"Error reading CSV file: {e}")
         raise
 
-# ------------------- Prepare Record -------------------
+
 def prepare_record(row):
     try:
         return {
@@ -57,7 +56,7 @@ def prepare_record(row):
         logging.warning(f"Failed to prepare record: {e}")
         return None
 
-# ------------------- Send Record to Kinesis -------------------
+
 def send_to_kinesis(client, record, stream_name, partition_key):
     try:
         response = client.put_record(
@@ -71,7 +70,7 @@ def send_to_kinesis(client, record, stream_name, partition_key):
         logging.error(f"Failed to send record to Kinesis: {e}")
         return None
 
-# ------------------- Main Streaming Function -------------------
+
 def stream_records():
     kinesis_client = get_kinesis_client(REGION_NAME)
     df = read_csv(CSV_FILE_PATH)
