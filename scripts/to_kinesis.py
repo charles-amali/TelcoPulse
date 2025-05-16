@@ -7,8 +7,7 @@ import time
 CSV_FILE_PATH = 'Data/mobile-logs.csv'        
 STREAM_NAME = 'telco-network-metrics'         
 REGION_NAME = 'eu-west-1'                     
-SLEEP_TIME = 1                                # Simulate 1 second delay
-
+SLEEP_TIME = 1                                
 # Initialize Kinesis client
 kinesis_client = boto3.client('kinesis', region_name=REGION_NAME)
 
@@ -18,6 +17,7 @@ df = pd.read_csv(CSV_FILE_PATH)
 # Loop through rows and stream selected fields
 for index, row in df.iterrows():
     record = {
+        
         "timestamp": row["hour"],
         "operator": row["operator"],
         "network": row["network"],
@@ -27,9 +27,9 @@ for index, row in df.iterrows():
         "signal": float(row["signal"]),
         "precision": float(row["precission"]),
         "status": row["status"]
-    }
+        
+    } 
 
-    # record = row.to_json()  # Convert row to JSON string format
     json_record = json.dumps(record) 
 
     partition_key = row["operator"]  # Use the operator as partition key
